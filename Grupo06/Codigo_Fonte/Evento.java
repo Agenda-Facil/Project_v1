@@ -1,53 +1,28 @@
 package Codigo_Fonte;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Evento{
     private Data DataInicio,DataFim;
     private String local,titulo;
-    private Usuario[] convidados = new Usuario[50]; //mudar pra arraylist na v3
-    private int contadorConvidados;
+    private List<Usuario> convidados = new ArrayList<Usuario>();
     private boolean confirmado;
 
-    //construtores
-    
-    public Evento(String titulo, String local, int diaInicio, int mesInicio, int anoInicio, int diaFim, int mesFim, int anoFim, int horaIncio, int minutoInicio, int horaFim, int minutoFim){
+    // Construtor da Classe Evento
+    public Evento(String titulo, String local, int diaInicio, int mesInicio, int anoInicio, int diaFim, int mesFim, int anoFim, int horaInicio, int minutoInicio, int horaFim, int minutoFim){
 
         this.titulo = titulo;
         this.local = local;
 
-        DataInicio = new Data(diaInicio, mesInicio, anoInicio, horaIncio, minutoInicio);
+        DataInicio = new Data(diaInicio, mesInicio, anoInicio, horaInicio, minutoInicio);
         DataFim = new Data(diaFim, mesFim, anoFim, horaFim, minutoFim);
-
-        //continuar na v3
-        
-
+        //caso a dataFim esteja vindo antes da dataInicio, criamos uma exceção
+        if(!validaDatas(DataInicio, DataFim)) throw new IllegalArgumentException("Datas de Inicio e Fim inválidas.");
     }
 
-    /*public Evento(String titulo, String local, Data DataInicio, Data DataFim){
-
-        this.titulo = titulo;
-        this.local = local;
-        /*
-        if(validaDatas(DataInicio, DataFim)){
-            this.DataInicio = DataInicio;
-            this.DataFim = DataFim;
-        }
-        else throw new IllegalArgumentException("Datas de Inicio e Fim inválidas.");
-        //this.confirmado = confirmado;
-        /*
-        this.contadorConvidados = contadorConvidados;
-        for(int i=0;i<contadorConvidados;i++){
-            this.convidados[i] = convidados[i];
-        }
-    }*/  
-
-    //metodos
-    /*public void verListaConvidados(){
-        for(int i=0;i<contadorConvidados;i++){
-            System.out.println("Convidado "+(i+1)+": "+convidados[i].getitulo());
-        }
-    }*/
+    // Método que apresenta a duração do Evento
     public void DuracaoEvento(){
         LocalDateTime inicio = LocalDateTime.of(DataInicio.getAno(), DataInicio.getMes(), DataInicio.getDia(), DataInicio.getHora(), DataInicio.getMinuto());
         LocalDateTime fim = LocalDateTime.of(DataFim.getAno(), DataFim.getMes(), DataFim.getDia(), DataFim.getHora(), DataFim.getMinuto());
@@ -56,27 +31,24 @@ public class Evento{
         long diferencaEmMinutos = ChronoUnit.MINUTES.between(inicio, fim)%60;
         System.out.printf("O Evento tem duração de %d dia(s), %d hora(s), %d minuto(s)\n", diferencaEmDias, diferencaEmHoras, diferencaEmMinutos);
     }
-    /*
-    public void visualizarEvento(){
-        System.out.println("titulo do Evento: "+titulo);
-        System.out.println("Local: "+local);
-        System.out.println("Data de Início: "+DataInicio.toString());
-        System.out.println("Data de Fim: "+DataFim.toString());
-        System.out.println("Confirmado: "+(confirmado ? "Sim" : "Não"));
-        System.out.println("Número de Convidados: "+contadorConvidados);
-    }
-    */
+    
     @Override
+    // Método toString para representar o Evento como String
     public String toString() {
         String eventoTitulo = "titulo do Evento: "+ this.getTitulo();
         String eventoLocal = "Local: "+ this.getLocal();
         String dtInicio = "Data de Início: "+ DataInicio.toString();
         String dtFim = "Data de Fim: "+ DataFim.toString();
         String confirmado = "Confirmado: "+ (this.confirmado ? "Sim" : "Não");
-        String numConvidados = "Número de Convidados: "+ String.valueOf(contadorConvidados);
-
-        String eventoString = eventoTitulo + System.lineSeparator() + eventoLocal + System.lineSeparator() + dtInicio + System.lineSeparator() + dtFim + System.lineSeparator() + confirmado + System.lineSeparator() + numConvidados;
-
+        String numConvidados = "Número de Convidados: "+ String.valueOf(convidados.size());
+        String convidados_string = "Os convidados são: [";
+        for(Usuario c:convidados){
+            convidados_string += c.getNome() + ", ";
+        }
+        //para remover o ", " do último nome, para não ficar, por exemplo: [Andressa, ]. obs: remove o ", " apenas se existir alguem
+        if(convidados.size()>0) convidados_string = convidados_string.substring(0,convidados_string.length()-2);
+        convidados_string += "]";
+        String eventoString = eventoTitulo + System.lineSeparator() + eventoLocal + System.lineSeparator() + dtInicio + System.lineSeparator() + dtFim + System.lineSeparator() + confirmado + System.lineSeparator() + numConvidados + System.lineSeparator() + convidados_string + System.lineSeparator();
         return eventoString;
     }
 
@@ -101,39 +73,6 @@ public class Evento{
         this.local = local;
     }
 
-    public String getDataInicio(){
-        return DataInicio.toString();
-    }
-    public void setDataInicio(int dia, int mes, int ano) {
-        DataInicio.setDia(dia);
-        DataInicio.setMes(mes);
-        DataInicio.setAno(ano);
-    }
-
-
-    public String getDataFim(){
-        return DataFim.toString();
-    }
-    public void setDataFim(int dia, int mes, int ano) {
-        DataFim.setDia(dia);
-        DataFim.setMes(mes);
-        DataFim.setAno(ano);
-    }
-
-    public Usuario[] getConvidados(){
-        return convidados;
-    }
-    public void setConvidados(Usuario[] convidados) {
-        this.convidados = convidados;
-    }
-
-    public int getContadorConvidados(){
-        return contadorConvidados;
-    }
-    public void setContadorConvidados(int contadorConvidados) {
-        this.contadorConvidados = contadorConvidados;
-    }
-
     public boolean getConfirmado(){
         return confirmado;
     }
@@ -141,46 +80,51 @@ public class Evento{
         this.confirmado = confirmado;
     }
 
-    //alteração de data (específicos)
-    public void alteraDiaDataInicio(int dia){
-        DataInicio.setDia(dia);
+    public List<Usuario> getConvidados(){
+        return convidados;
     }
-    public void alteraMesDataInicio(int mes){
-        DataInicio.setMes(mes);
-    }
-    public void alteraAnoDataInicio(int ano){
-        DataInicio.setAno(ano);
+    public void setConvidados(List<Usuario> convidados) {
+        this.convidados = convidados;
     }
 
-    public void alteraDiaDataFim(int dia){
-        DataFim.setDia(dia);
-    }
-    public void alteraMesDataFim(int mes){
-        DataFim.setDia(mes);
-    }
-    public void alteraAnoDataFim(int ano){
-        DataFim.setDia(ano);
-    }
-
-    //alteração de hora
+    // Métodos que alteram especificamente a hora/minuto da DataInicio ou dataFim
     public void alteraHorarioInicio(int valor, int aux) {
-        if (aux == 0) {
-            DataInicio.setHora(valor);
-        } else if (aux == 1) {
-            DataInicio.setMinuto(valor);
-        } else {
-            throw new IllegalArgumentException("Valor de 'aux' inválido.");
-        }
+        if (aux == 0) DataInicio.setHora(valor);
+        else DataInicio.setMinuto(valor);
+        if(!validaDatas(DataInicio, DataFim)) throw new IllegalArgumentException("Datas de Inicio e Fim inválidas.");
     }
     
     public void alteraHorarioFim(int valor, int aux) {
-        if (aux == 0) {
-            DataFim.setHora(valor);
-        } else if (aux == 1) {
-            DataFim.setMinuto(valor);
-        } else {
-            throw new IllegalArgumentException("Valor de 'aux' inválido.");
-        }
+        if (aux == 0) DataFim.setHora(valor);
+        else DataFim.setMinuto(valor);
+        if(!validaDatas(DataInicio, DataFim)) throw new IllegalArgumentException("Datas de Inicio e Fim inválidas.");
     }
     
+    // Métodos que alteram a DataInicio
+    public void alteraDiaDataInicio(int dia){
+        DataInicio.setDia(dia);
+        if(!validaDatas(DataInicio, DataFim)) throw new IllegalArgumentException("Datas de Inicio e Fim inválidas.");
+    }
+    public void alteraMesDataInicio(int mes){
+        DataInicio.setMes(mes);
+        if(!validaDatas(DataInicio, DataFim)) throw new IllegalArgumentException("Datas de Inicio e Fim inválidas.");
+    }
+    public void alteraAnoDataInicio(int ano){
+        DataInicio.setAno(ano);
+        if(!validaDatas(DataInicio, DataFim)) throw new IllegalArgumentException("Datas de Inicio e Fim inválidas.");
+    }
+    
+    // Métodos que alteram a DataFim
+    public void alteraDiaDataFim(int dia){
+        DataFim.setDia(dia);
+        if(!validaDatas(DataInicio, DataFim)) throw new IllegalArgumentException("Datas de Inicio e Fim inválidas.");
+    }
+    public void alteraMesDataFim(int mes){
+        DataFim.setMes(mes);
+        if(!validaDatas(DataInicio, DataFim)) throw new IllegalArgumentException("Datas de Inicio e Fim inválidas.");
+    }
+    public void alteraAnoDataFim(int ano){
+        DataFim.setAno(ano);
+        if(!validaDatas(DataInicio, DataFim)) throw new IllegalArgumentException("Datas de Inicio e Fim inválidas.");
+    }
 }

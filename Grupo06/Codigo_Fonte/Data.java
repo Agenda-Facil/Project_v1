@@ -18,7 +18,7 @@ public class Data {
             this.dia = dia;
             this.mes = mes;
             this.ano = ano;
-        } else throw new IllegalArgumentException("A Data inseria está inválida");
+        } else throw new IllegalArgumentException("A Data inserida está inválida");
 
         // Verifica se a hora é válida
         if (validaHora(hora, minuto)) {
@@ -128,4 +128,3 @@ public class Data {
         } else throw new IllegalArgumentException("O minuto inserido está inválido");
     }
 }
-
